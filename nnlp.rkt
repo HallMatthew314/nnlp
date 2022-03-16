@@ -84,6 +84,43 @@
         (if (list? x) (build-list (first x) (const (second x))) (list x)))
       items)))
 
+; P13: Run-length encoding of a list (direct solution).
+(define (encode-direct items)
+  (letrec
+    ([inc-pair (lambda (p)
+      (cons (add1 (car p)) (cdr p)))]
+    [go (lambda (x xs)
+      (cond
+        [(null? xs) (list x)]
+        [(and (list? (car xs)) (equal? x (second (car xs))))
+          (cons (inc-pair (car xs)) (cdr xs))]
+        [(equal? x (car xs))
+          (cons (list 2 x) (cdr xs))]
+        [else
+          (cons x xs)]))])
+    (foldr go '() items)))
+
+; P14: Duplicate the elements of a list.
+(define (dupli items)
+  (repli items 2))
+
+; P15: Replicate the elements of a list.
+(define (repli items n)
+  (letrec
+    ([n-times (lambda (e i)
+      (if (zero? i) '() (cons e (n-times e (sub1 i)))))])
+    (append-map (lambda (x) (n-times x n)) items)))
+
+; P16: Drop every n'th element from a list.
+(define (drop-every-n items n)
+  (letrec
+    ([help (lambda (i xs)
+      (cond
+        [(null? xs) '()]
+        [(zero? i) (help (modulo (sub1 i) n) (cdr xs))]
+        [else (cons (car xs) (help (sub1 i) (cdr xs)))]))])
+    (help (sub1 n) items)))
+
 (let ([functions-list (list
         my-last
         my-but-last
@@ -96,7 +133,11 @@
         pack
         encode
         encode-modified
-        decode)]
+        decode
+        encode-direct
+        dupli
+        repli
+        drop-every-n)]
       [expected-list (list
         (list 5)
         (list 4 5)
@@ -109,7 +150,11 @@
         (list (list 1 1 1 1) (list 2) (list 3 3) (list 1 1) (list 4) (list 5 5 5 5))
         (list (list 4 1) (list 1 2) (list 2 3) (list 2 1) (list 1 4) (list 4 5))
         (list (list 4 1) 2 (list 2 3) (list 2 1) 4 (list 4 5))
-        (list 1 1 1 1 2 3 3 1 1 4 5 5 5 5))]
+        (list 1 1 1 1 2 3 3 1 1 4 5 5 5 5)
+        (list (list 4 1) 2 (list 2 3) (list 2 1) 4 (list 4 5))
+        (list 1 1 2 2 3 3 3 3 4 4)
+        (list 1 1 1 2 2 2 3 3 3)
+        (list 0 1 3 4 6 7 9))]
       [args-list (list
         (list (list 1 2 3 4 5))
         (list (list 1 2 3 4 5))
@@ -122,7 +167,11 @@
         (list (list 1 1 1 1 2 3 3 1 1 4 5 5 5 5))
         (list (list 1 1 1 1 2 3 3 1 1 4 5 5 5 5))
         (list (list 1 1 1 1 2 3 3 1 1 4 5 5 5 5))
-        (list (list (list 4 1) 2 (list 2 3) (list 2 1) 4 (list 4 5))))])
+        (list (list (list 4 1) 2 (list 2 3) (list 2 1) 4 (list 4 5)))
+        (list (list 1 1 1 1 2 3 3 1 1 4 5 5 5 5))
+        (list (list 1 2 3 3 4))
+        (list (list 1 2 3) 3)
+        (list (list 0 1 2 3 4 5 6 7 8 9) 3))])
   (map
     (lambda (e f a)
       (writeln (test-function e f a)))
