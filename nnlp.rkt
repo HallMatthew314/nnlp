@@ -121,6 +121,59 @@
         [else (cons (car xs) (help (sub1 i) (cdr xs)))]))])
     (help (sub1 n) items)))
 
+; TODO: Write test and verify solution
+; P17: Split a list into two parts; the length of the first part is given.
+; (No predefined functions allowed).
+(define (my-split items n)
+  (cond
+    [(null? items) (list '() '())]
+	[(zero? n) (list '() items)]
+	[else
+	  (let
+	    (next (my-split (cdr items) (sub1 n)))
+		(cons (cons (car items) (car next)) (cdr next)))]))
+
+; TODO: Write test and verify solution
+; P18: Extract a slice from a list. (1-indexed)
+(define (items i k)
+  (take (drop items (sub1 i)) k))
+
+; TODO: Write test and verify solution
+; P19: Rotate a list N places to the left.
+(define (rotate items n)
+  (letrec
+    ([rot-left (lambda (xs) (append (cdr xs) (list (car xs))))]
+    [rot-right (lambda (xs) (cons (last xs) (drop-right xs 1)))]
+	[n-times (lambda (i f x)
+	  (if (zero? i) x
+	    (n-times (sub1 i) f (f x))))])
+    (cond
+	  [(or (zero? n) (null? items)) items]
+	  [(positive? n) (n-times n rot-left items)]
+	  [(negative? n) (n-times n rot-right items)])))
+
+; TODO: Write test and verify solution
+; P20: Remove the K'th element from a list. (1-indexed)
+(define (my-remove-at items k)
+  (if (equal? k 1)
+    (cdr items)
+	(cons (car items) (my-remove-at (cdr items) (sub1 k)))))
+
+; TODO: Write test and verify solution
+; P21: Insert an element at a given position into a list. (1-indexed)
+(define (insert-at x items k)
+  (if (equal? k 1)
+    (cons k items)
+	(cons (car items) (insert-at x (cdr items) (sub1 k)))))
+
+; TODO: Write test and verify solution
+; P22: Create a list containing all integers within a given range. (Inclusive)
+; If first argument is smaller than second, produce a list in decreasing order.
+(define (my-range i j)
+  (if (equal? i j) (list i)
+    (cons i
+	(my-range (if (< i j) (add1 i) (sub1 i)) j)))
+
 (let ([functions-list (list
         my-last
         my-but-last
