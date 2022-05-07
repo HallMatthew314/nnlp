@@ -150,18 +150,16 @@
 	  [(positive? n) (n-times n rot-left items)]
 	  [(negative? n) (n-times (abs n) rot-right items)])))
 
-; TODO: Write test and verify solution
 ; P20: Remove the K'th element from a list. (1-indexed)
 (define (my-remove-at items k)
   (if (equal? k 1)
     (cdr items)
 	(cons (car items) (my-remove-at (cdr items) (sub1 k)))))
 
-; TODO: Write test and verify solution
 ; P21: Insert an element at a given position into a list. (1-indexed)
 (define (insert-at x items k)
   (if (equal? k 1)
-    (cons k items)
+    (cons x items)
 	(cons (car items) (insert-at x (cdr items) (sub1 k)))))
 
 ; TODO: Write test and verify solution
@@ -191,8 +189,10 @@
         drop-every-n
         my-split
         slice
-        rotate ; positive and negative test needed
-        rotate)]
+        rotate ; positive test
+        rotate ; negative test
+        my-remove-at
+        insert-at)]
       [expected-list (list
         (list 5)
         (list 4 5)
@@ -212,8 +212,10 @@
         (list 0 1 3 4 6 7 9)
         (list (list 0 1 2) (list 3 4 5 6 7 8 9))
         (list 2 3 4 5 6)
-        (list 3 4 5 6 7 0 1 2)
-        (list 6 7 0 1 2 3 4 5))]
+        (list 3 4 5 6 7 0 1 2) ; rotate positive
+        (list 6 7 0 1 2 3 4 5) ; rotate negative
+        (list 0 2 3)
+        (list 0 99 1 2 3))]
       [args-list (list
         (list (list 1 2 3 4 5))
         (list (list 1 2 3 4 5))
@@ -233,8 +235,10 @@
         (list (list 0 1 2 3 4 5 6 7 8 9) 3)
         (list (list 0 1 2 3 4 5 6 7 8 9) 3)
         (list (list 0 1 2 3 4 5 6 7 8 9) 3 7)
-        (list (list 0 1 2 3 4 5 6 7) 3)
-        (list (list 0 1 2 3 4 5 6 7) -2))])
+        (list (list 0 1 2 3 4 5 6 7) 3) ; rotate positive
+        (list (list 0 1 2 3 4 5 6 7) -2) ; rotate negative
+        (list (list 0 1 2 3) 2)
+        (list 99 (list 0 1 2 3) 2))])
   (map
     (lambda (e f a)
       (writeln (test-function e f a)))
