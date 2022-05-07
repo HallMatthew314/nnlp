@@ -121,7 +121,6 @@
         [else (cons (car xs) (help (sub1 i) (cdr xs)))]))])
     (help (sub1 n) items)))
 
-; TODO: Write test and verify solution
 ; P17: Split a list into two parts; the length of the first part is given.
 ; (No predefined functions allowed).
 (define (my-split items n)
@@ -130,13 +129,13 @@
 	[(zero? n) (list '() items)]
 	[else
 	  (let
-	    (next (my-split (cdr items) (sub1 n)))
+	    ([next (my-split (cdr items) (sub1 n))])
 		(cons (cons (car items) (car next)) (cdr next)))]))
 
 ; TODO: Write test and verify solution
 ; P18: Extract a slice from a list. (1-indexed)
-(define (items i k)
-  (take (drop items (sub1 i)) k))
+(define (slice items i k)
+  (drop (take items k) (sub1 i)))
 
 ; TODO: Write test and verify solution
 ; P19: Rotate a list N places to the left.
@@ -172,7 +171,7 @@
 (define (my-range i j)
   (if (equal? i j) (list i)
     (cons i
-	(my-range (if (< i j) (add1 i) (sub1 i)) j)))
+	(my-range (if (< i j) (add1 i) (sub1 i)) j))))
 
 (let ([functions-list (list
         my-last
@@ -190,7 +189,9 @@
         encode-direct
         dupli
         repli
-        drop-every-n)]
+        drop-every-n
+        my-split
+        slice)]
       [expected-list (list
         (list 5)
         (list 4 5)
@@ -207,7 +208,9 @@
         (list (list 4 1) 2 (list 2 3) (list 2 1) 4 (list 4 5))
         (list 1 1 2 2 3 3 3 3 4 4)
         (list 1 1 1 2 2 2 3 3 3)
-        (list 0 1 3 4 6 7 9))]
+        (list 0 1 3 4 6 7 9)
+        (list (list 0 1 2) (list 3 4 5 6 7 8 9))
+        (list 2 3 4 5 6))]
       [args-list (list
         (list (list 1 2 3 4 5))
         (list (list 1 2 3 4 5))
@@ -224,7 +227,9 @@
         (list (list 1 1 1 1 2 3 3 1 1 4 5 5 5 5))
         (list (list 1 2 3 3 4))
         (list (list 1 2 3) 3)
-        (list (list 0 1 2 3 4 5 6 7 8 9) 3))])
+        (list (list 0 1 2 3 4 5 6 7 8 9) 3)
+        (list (list 0 1 2 3 4 5 6 7 8 9) 3)
+        (list (list 0 1 2 3 4 5 6 7 8 9) 3 7))])
   (map
     (lambda (e f a)
       (writeln (test-function e f a)))
