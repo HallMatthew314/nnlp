@@ -137,7 +137,6 @@
 (define (slice items i k)
   (drop (take items k) (sub1 i)))
 
-; TODO: Write test and verify solution
 ; P19: Rotate a list N places to the left.
 (define (rotate items n)
   (letrec
@@ -149,7 +148,7 @@
     (cond
 	  [(or (zero? n) (null? items)) items]
 	  [(positive? n) (n-times n rot-left items)]
-	  [(negative? n) (n-times n rot-right items)])))
+	  [(negative? n) (n-times (abs n) rot-right items)])))
 
 ; TODO: Write test and verify solution
 ; P20: Remove the K'th element from a list. (1-indexed)
@@ -191,7 +190,9 @@
         repli
         drop-every-n
         my-split
-        slice)]
+        slice
+        rotate ; positive and negative test needed
+        rotate)]
       [expected-list (list
         (list 5)
         (list 4 5)
@@ -210,7 +211,9 @@
         (list 1 1 1 2 2 2 3 3 3)
         (list 0 1 3 4 6 7 9)
         (list (list 0 1 2) (list 3 4 5 6 7 8 9))
-        (list 2 3 4 5 6))]
+        (list 2 3 4 5 6)
+        (list 3 4 5 6 7 0 1 2)
+        (list 6 7 0 1 2 3 4 5))]
       [args-list (list
         (list (list 1 2 3 4 5))
         (list (list 1 2 3 4 5))
@@ -229,7 +232,9 @@
         (list (list 1 2 3) 3)
         (list (list 0 1 2 3 4 5 6 7 8 9) 3)
         (list (list 0 1 2 3 4 5 6 7 8 9) 3)
-        (list (list 0 1 2 3 4 5 6 7 8 9) 3 7))])
+        (list (list 0 1 2 3 4 5 6 7 8 9) 3 7)
+        (list (list 0 1 2 3 4 5 6 7) 3)
+        (list (list 0 1 2 3 4 5 6 7) -2))])
   (map
     (lambda (e f a)
       (writeln (test-function e f a)))
