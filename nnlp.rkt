@@ -162,13 +162,12 @@
     (cons x items)
 	(cons (car items) (insert-at x (cdr items) (sub1 k)))))
 
-; TODO: Write test and verify solution
 ; P22: Create a list containing all integers within a given range. (Inclusive)
 ; If first argument is smaller than second, produce a list in decreasing order.
 (define (my-range i j)
   (if (equal? i j) (list i)
     (cons i
-	(my-range (if (< i j) (add1 i) (sub1 i)) j))))
+	  (my-range (if (< i j) (add1 i) (sub1 i)) j))))
 
 (let ([functions-list (list
         my-last
@@ -192,7 +191,9 @@
         rotate ; positive test
         rotate ; negative test
         my-remove-at
-        insert-at)]
+        insert-at
+        my-range ; ascending and descending tests
+        my-range)]
       [expected-list (list
         (list 5)
         (list 4 5)
@@ -215,7 +216,9 @@
         (list 3 4 5 6 7 0 1 2) ; rotate positive
         (list 6 7 0 1 2 3 4 5) ; rotate negative
         (list 0 2 3)
-        (list 0 99 1 2 3))]
+        (list 0 99 1 2 3)
+        (list 4 5 6 7 8 9) ; my-range ascending and descending tests
+        (list 9 8 7 6 5 4))]
       [args-list (list
         (list (list 1 2 3 4 5))
         (list (list 1 2 3 4 5))
@@ -238,7 +241,9 @@
         (list (list 0 1 2 3 4 5 6 7) 3) ; rotate positive
         (list (list 0 1 2 3 4 5 6 7) -2) ; rotate negative
         (list (list 0 1 2 3) 2)
-        (list 99 (list 0 1 2 3) 2))])
+        (list 99 (list 0 1 2 3) 2)
+        (list 4 9) ; my-range ascending and descending tests
+        (list 9 4))])
   (map
     (lambda (e f a)
       (writeln (test-function e f a)))
