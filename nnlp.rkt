@@ -189,6 +189,58 @@
 (define (rnd-permu items)
   (rnd-select items (length items)))
 
+; P26: Generate the combinations of K distinct objects chosen from the N elements of a list
+; TODO
+
+; P27: Group the elements of a set into disjoint subsets.
+; TODO
+
+; P28: Sorting a list of lists according to length of sublists
+; TODO
+
+; P31: Determine whether a given integer number is prime.
+(define (is-prime n)
+  (andmap
+    (lambda (x) (not (zero? (remainder n x))))
+    (my-range 2 (integer-sqrt n))))
+
+; P32: Determine the greatest common divisor of two positive integer numbers.
+(define (my-gcd a b)
+  (cond
+    [(> b a) (my-gcd b a)]
+    [(zero? b) a]
+    [else (my-gcd b (remainder a b))]))
+
+; P33: Determine whether two positive integer numbers are coprime.
+(define (coprime a b)
+  (equal? 1 (my-gcd a b)))
+
+; P34: Calculate Euler's totient function phi(m).
+(define (totient-phi m)
+  (if (equal? 1 m) 1
+    (length (filter (lambda (x) (coprime x m)) (my-range 1 (sub1 m))))))
+
+; P35: Determine the prime factors of a given positive integer.
+(define (prime-factors n)
+  (define (lowest-odd-factor x f)
+    (cond
+      [(<= x f) x]
+      [(zero? (remainder x f)) f]
+      [else (lowest-odd-factor x (+ f 2))]))
+  (cond
+    [(equal? n 1) '()]
+    [(even? n) (cons 2 (prime-factors (/ n 2)))]
+    [else
+      (let
+        ([lf (lowest-odd-factor n 3)])
+        (cons lf (prime-factors (/ n lf))))]))
+
+; P36: Determine the prime factors of a given positive integer (2). Construct a list containing the prime factors and their multiplicity.
+(define (prime-factors-mult n)
+  (map
+    (lambda (p) (list (second p) (first p)))
+    (encode (prime-factors n))))
+
 (let ([functions-list (list
         my-last
         my-but-last
@@ -212,8 +264,16 @@
         rotate ; negative test
         my-remove-at
         insert-at
-        my-range ; ascending and descending tests
-        my-range)]
+        my-range ; ascending test
+        my-range ; descending test
+        ; P23-P25 are random, omitted from tests
+        ; skipping P26-30 for now
+        is-prime
+        my-gcd
+        coprime
+        totient-phi
+        prime-factors
+        prime-factors-mult)]
       [expected-list (list
         (list 5)
         (list 4 5)
@@ -237,8 +297,16 @@
         (list 6 7 0 1 2 3 4 5) ; rotate negative
         (list 0 2 3)
         (list 0 99 1 2 3)
-        (list 4 5 6 7 8 9) ; my-range ascending and descending tests
-        (list 9 8 7 6 5 4))]
+        (list 4 5 6 7 8 9) ; my-range ascending test
+        (list 9 8 7 6 5 4) ; my-range descending test
+        ; P23-P25 are random, omitted from tests
+        ; skipping P26-30 for now
+        #t
+        9
+        #t
+        4
+        (list 3 3 5 7)
+        (list (list 3 2) (list 5 1) (list 7 1)))]
       [args-list (list
         (list (list 1 2 3 4 5))
         (list (list 1 2 3 4 5))
@@ -262,8 +330,16 @@
         (list (list 0 1 2 3 4 5 6 7) -2) ; rotate negative
         (list (list 0 1 2 3) 2)
         (list 99 (list 0 1 2 3) 2)
-        (list 4 9) ; my-range ascending and descending tests
-        (list 9 4))])
+        (list 4 9) ; my-range ascending test
+        (list 9 4) ; my-range descending test
+        ; P23-P25 are random, omitted from tests
+        ; skipping P26-30 for now
+        (list 7)
+        (list 36 63)
+        (list 35 64)
+        (list 10)
+        (list 315)
+        (list 315))])
   (map
     (lambda (e f a)
       (writeln (test-function e f a)))
