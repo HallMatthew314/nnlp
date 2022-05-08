@@ -169,6 +169,26 @@
     (cons i
 	  (my-range (if (< i j) (add1 i) (sub1 i)) j))))
 
+; P23: Extract a given number of randomly selected elements from a list. (No duplicates)
+; TESTED MANUALLY
+(define (rnd-select items n)
+  (if (or (zero? n) (null? items)) '()
+    (let
+      ([i (random (length items))])
+      (cons
+        (list-ref items i)
+        (rnd-select (my-remove-at items (add1 i)) (sub1 n))))))
+
+; P24: Lotto: Draw N different random numbers from the set 1..M
+; TESTED MANUALLY
+(define (lotto-select n m)
+  (rnd-select (my-range 1 m) n))
+
+; P25: Generate a random permutation of the elements of a list.
+; TESTED MANUALLY
+(define (rnd-permu items)
+  (rnd-select items (length items)))
+
 (let ([functions-list (list
         my-last
         my-but-last
