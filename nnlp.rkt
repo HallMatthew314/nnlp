@@ -290,6 +290,29 @@
       (lambda (x) (andmap (lambda (i) (>= i print-limit)) x))
       (map goldbach (range (fix-start lower) upper 2)))))
 
+; P46: Truth tables for logical expressions.
+; UNTESTED
+(define (my-and x y)
+  (if x y #f))
+
+(define (my-or x y)
+  (if x #t y))
+
+(define (my-nand x y)
+  (not (my-and x y)))
+
+(define (my-nor x y)
+  (not (my-or x y)))
+
+(define (my-equ x y)
+  (equal? x y))
+
+(define (my-xor x y)
+  (not (my-equ x y)))
+
+(define (my-impl x y)
+  (if x y #t))
+
 (let ([functions-list (list
         my-last
         my-but-last
