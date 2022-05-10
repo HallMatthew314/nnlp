@@ -242,7 +242,12 @@
     (encode (prime-factors n))))
 
 ; P37: Calculate Euler's totient function phi(m) (improved).
-; TODO
+(define (totient-phi-improved n)
+  (apply *
+    (map
+      (lambda (pm)
+        (match pm [(list p m) (expt (* p (sub1 p)) (sub1 m))]))
+      (prime-factors-mult n))))
 
 ; P38: Compare the two methods of calculating Euler's totient function.
 ; TODO
@@ -318,7 +323,7 @@
         totient-phi
         prime-factors
         prime-factors-mult
-        ; skipping
+        ; P38 not testable
         prime-list
         goldbach
         goldbach-list)]
@@ -355,7 +360,8 @@
         4
         (list 3 3 5 7)
         (list (list 3 2) (list 5 1) (list 7 1))
-        ; skipping
+        4
+        ; P38 not testable
         (list 5 7 11 13 17 19)
         (list 5 23)
         (list "992 = 73 + 919" "1382 = 61 + 1321" "1856 = 67 + 1789" "1928 = 61 + 1867"))]
@@ -392,7 +398,8 @@
         (list 10)
         (list 315)
         (list 315)
-        ; skipping
+        (list 10)
+        ; P38 not testable
         (list 4 20)
         (list 28)
         (list 1 2000 50))])
