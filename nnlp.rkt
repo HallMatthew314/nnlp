@@ -248,17 +248,15 @@
 ; TODO
 
 ; P39: A list of prime numbers. Given a range of integers by its lower and upper limit, construct a list of all prime numbers in that range.
-; UNTESTED
 (define (prime-list start end)
   (define (help i ps)
     (cond
       [(> i end) ps]
       [(andmap (lambda (p) (not (zero? (remainder i p)))) ps) (help (+ 2 i) (cons i ps))]
       [else (help (+ 2 i) ps)]))
-  (dropf (cons 2 (help 3 '())) (lambda (x) (< x start))))
+  (dropf (cons 2 (reverse (help 3 '()))) (lambda (x) (< x start))))
 
 ; P40: Goldbach's conjecture.
-; UNTESTED
 (define (goldbach n)
   (let
     ([primes (prime-list 2 n)])
@@ -269,18 +267,23 @@
     (list p (- n p)))))
 
 ; P41: A list of Goldbach compositions.
-; UNTESTED
 (define (goldbach-list lower upper [print-limit 1])
-  (cond
-    [(> lower upper) '()]
-    [(odd? lower) (goldbach-list (add1 lower) upper)]
-    [else
-      (match (map number->string (goldbach lower)) [(list x y)
-        (if (and (> x print-limit) (> y print-limit))
-          (cons
-            (string-append (number->string lower) " = " x " + " y)
-            (goldbach-list (+ 2 lower) upper))
-          (goldbach-list (+ 2 lower) upper))])]))
+  (define (fix-start s)
+    (cond
+      [(< s 4) 4]
+      [(odd? s) (add1 s)]
+      [else s]))
+  (map
+    (lambda (ps)
+      (string-append
+        (~a (apply + ps))
+        " = "
+        (~a (first ps))
+        " + "
+        (~a (second ps))))
+    (filter
+      (lambda (x) (andmap (lambda (i) (>= i print-limit)) x))
+      (map goldbach (range (fix-start lower) upper 2)))))
 
 (let ([functions-list (list
         my-last
@@ -314,7 +317,11 @@
         coprime
         totient-phi
         prime-factors
-        prime-factors-mult)]
+        prime-factors-mult
+        ; skipping
+        prime-list
+        goldbach
+        goldbach-list)]
       [expected-list (list
         (list 5)
         (list 4 5)
@@ -347,7 +354,11 @@
         #t
         4
         (list 3 3 5 7)
-        (list (list 3 2) (list 5 1) (list 7 1)))]
+        (list (list 3 2) (list 5 1) (list 7 1))
+        ; skipping
+        (list 5 7 11 13 17 19)
+        (list 5 23)
+        (list "992 = 73 + 919" "1382 = 61 + 1321" "1856 = 67 + 1789" "1928 = 61 + 1867"))]
       [args-list (list
         (list (list 1 2 3 4 5))
         (list (list 1 2 3 4 5))
@@ -380,7 +391,11 @@
         (list 35 64)
         (list 10)
         (list 315)
-        (list 315))])
+        (list 315)
+        ; skipping
+        (list 4 20)
+        (list 28)
+        (list 1 2000 50))])
   (map
     (lambda (e f a)
       (writeln (test-function e f a)))
