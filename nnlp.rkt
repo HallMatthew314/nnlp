@@ -241,6 +241,47 @@
     (lambda (p) (list (second p) (first p)))
     (encode (prime-factors n))))
 
+; P37: Calculate Euler's totient function phi(m) (improved).
+; TODO
+
+; P38: Compare the two methods of calculating Euler's totient function.
+; TODO
+
+; P39: A list of prime numbers. Given a range of integers by its lower and upper limit, construct a list of all prime numbers in that range.
+; UNTESTED
+(define (prime-list start end)
+  (define (help i ps)
+    (cond
+      [(> i end) ps]
+      [(andmap (lambda (p) (not (zero? (remainder i p)))) ps) (help (+ 2 i) (cons i ps))]
+      [else (help (+ 2 i) ps)]))
+  (dropf (cons 2 (help 3 '())) (lambda (x) (< x start))))
+
+; P40: Goldbach's conjecture.
+; UNTESTED
+(define (goldbach n)
+  (let
+    ([primes (prime-list 2 n)])
+  (let
+    ([p (first (filter
+                 (lambda (x) (member (- n x) primes))
+                 primes))])
+    (list p (- n p)))))
+
+; P41: A list of Goldbach compositions.
+; UNTESTED
+(define (goldbach-list lower upper [print-limit 1])
+  (cond
+    [(> lower upper) '()]
+    [(odd? lower) (goldbach-list (add1 lower) upper)]
+    [else
+      (match (map number->string (goldbach lower)) [(list x y)
+        (if (and (> x print-limit) (> y print-limit))
+          (cons
+            (string-append (number->string lower) " = " x " + " y)
+            (goldbach-list (+ 2 lower) upper))
+          (goldbach-list (+ 2 lower) upper))])]))
+
 (let ([functions-list (list
         my-last
         my-but-last
